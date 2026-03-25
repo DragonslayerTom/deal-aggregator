@@ -8,6 +8,8 @@ services:
         fromDatabase:
           name: deal-aggregator-db
           property: connectionString
+      - key: EXA_API_KEY
+        value: "f78249b0-fb33-41b5-872a-d7871c24e50e"
 
   - type: web
     name: deal-aggregator-web
