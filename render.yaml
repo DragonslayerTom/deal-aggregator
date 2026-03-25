@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: deal-aggregator-api
+    env: python
+    rootDir: backend
+    buildCommand: "pip install -r requirements.txt && python -m playwright install chromium"
+    startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: deal-aggregator-db
+          property: connectionString
+
+  - type: web
+    name: deal-aggregator-web
+    env: static
+    rootDir: frontend
+    buildCommand: "npm install && npm run build"
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        value: "https://deal-aggregator-api.onrender.com/api"
+
+databases:
+  - name: deal-aggregator-db
+    databaseName: deal_aggregator
+    user: deal_user
