@@ -17,7 +17,7 @@ services:
     staticPublishPath: ./dist
     envVars:
       - key: VITE_API_URL
-        value: "https://deal-aggregator-api.onrender.com/api"
+        value: "https://deal-aggregator-n4rf.onrender.com/api"
 
 databases:
   - name: deal-aggregator-db
