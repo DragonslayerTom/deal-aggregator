@@ -383,11 +383,7 @@ class DealAggregator:
             EbayScraper(),
             BestBuyScraper(),
         ]
-        # Add mock scrapers for demo
-        for retailer in ['Walmart', 'Target', 'Costco']:
-            scraper = MockScraper(retailer, f'https://{retailer.lower()}.com')
-            self.scrapers.append(scraper)
-    
+        
     async def search_all(self, query: str, limit: int = 3) -> List[Dict]:
         """Search all retailers concurrently"""
         logger.info(f"Searching for: {query}")
