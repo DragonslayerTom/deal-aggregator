@@ -13,6 +13,7 @@ interface RetailerResult {
 interface Product {
   name: string;
   image?: string;
+  type?: string;
   retailers: RetailerResult[];
 }
 

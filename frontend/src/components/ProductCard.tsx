@@ -11,6 +11,7 @@ interface ProductCardProps {
   product: {
     name: string;
     image?: string;
+    type?: string;
     retailers: RetailerResult[];
   };
 }
@@ -41,6 +42,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </svg>
           </div>
         )}
+        
+        {product.type && (
+          <div className="absolute top-3 left-3">
+            <span className="bg-purple-600/90 backdrop-blur-md shadow-lg shadow-purple-500/40 text-white text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest border border-purple-400/30">
+              {product.type}
+            </span>
+          </div>
+        )}
+
         <div className="absolute top-3 right-3">
           <span className="bg-blue-600 shadow-lg shadow-blue-500/50 text-white text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest mix-blend-screen">
             {product.retailers.length} Sellers

@@ -50,12 +50,27 @@ async def search_endpoint(q: str, limit: int = 20):
         agg = DealAggregator()
         products_data = await agg.search_all(q, limit=10)
         
+        def guess_type(text, q_text):
+            t = text.lower() + " " + q_text.lower()
+            if any(k in t for k in ['laptop', 'macbook', 'pc', 'computer']): return 'Computers & Tech'
+            if any(k in t for k in ['phone', 'iphone', 'galaxy', 'pixel', 'smartphone']): return 'Mobile Devices'
+            if any(k in t for k in ['tv', 'television', 'oled', 'smart tv']): return 'TV & Home Theater'
+            if any(k in t for k in ['headphone', 'earbud', 'airpod', 'speaker']): return 'Audio'
+            if any(k in t for k in ['game', 'playstation', 'xbox', 'nintendo', 'console']): return 'Gaming'
+            if any(k in t for k in ['watch', 'smartwatch']): return 'Wearables'
+            if any(k in t for k in ['shoe', 'shirt', 'sneaker', 'jacket', 'clothing']): return 'Apparel'
+            if any(k in t for k in ['toy', 'lego', 'action figure']): return 'Toys'
+            if any(k in t for k in ['book', 'novel']): return 'Books'
+            if any(k in t for k in ['kitchen', 'blender', 'coffee', 'vacuum']): return 'Home & Kitchen'
+            return 'General Good'
+            
         # Group by product name
         results = {}
         for item in products_data:
             key = item['name'][:50]
             if key not in results:
-                results[key] = {'name': item['name'], 'image': item.get('image', ''), 'retailers': []}
+                product_type = guess_type(item['name'], q)
+                results[key] = {'name': item['name'], 'image': item.get('image', ''), 'type': product_type, 'retailers': []}
             
             # Use the first available image if one wasn't set yet
             if not results[key].get('image') and item.get('image'):
