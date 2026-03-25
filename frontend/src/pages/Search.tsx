@@ -27,7 +27,8 @@ const Search: React.FC = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.get('/api/search', {
+      const baseURL = import.meta.env.VITE_API_URL || '/api';
+      const response = await axios.get(`${baseURL}/search`, {
         params: { q: searchQuery, limit: 12 }
       });
       // The API returns { products: [...] }
