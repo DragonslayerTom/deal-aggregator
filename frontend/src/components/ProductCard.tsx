@@ -10,6 +10,7 @@ interface RetailerResult {
 interface ProductCardProps {
   product: {
     name: string;
+    image?: string;
     retailers: RetailerResult[];
   };
 }
@@ -19,14 +20,30 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const bestRetailer = product.retailers.find(r => r.price === bestPrice);
 
   return (
-    <div className="glass-card group flex flex-col h-full overflow-hidden relative">
-      <div className="absolute top-0 right-0 p-4">
-        <span className="bg-blue-500/10 text-blue-400 text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-widest border border-blue-500/20">
-          {product.retailers.length} Sellers
-        </span>
+    <div className="glass-card group flex flex-col h-full overflow-hidden relative p-0">
+      {/* Image Header */}
+      <div className="w-full h-48 bg-white/5 relative overflow-hidden flex items-center justify-center shrink-0 border-b border-white/10 group-hover:bg-white/10 transition-colors">
+        {product.image ? (
+          <img 
+            src={product.image} 
+            alt={product.name} 
+            className="max-w-[80%] max-h-[80%] object-contain mix-blend-lighten opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 drop-shadow-2xl" 
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-blue-500/10 to-purple-500/10 flex items-center justify-center">
+            <svg className="w-12 h-12 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+        )}
+        <div className="absolute top-3 right-3">
+          <span className="bg-blue-600 shadow-lg shadow-blue-500/50 text-white text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest mix-blend-screen">
+            {product.retailers.length} Sellers
+          </span>
+        </div>
       </div>
 
-      <div className="flex-grow pt-4">
+      <div className="flex-grow p-6 flex flex-col">
         <h3 className="text-xl font-bold text-white mb-2 line-clamp-2 leading-tight group-hover:text-blue-400 transition-colors duration-300">
           {product.name}
         </h3>
@@ -51,15 +68,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
       </div>
 
-      <div className="pt-6">
+      <div className="p-6 pt-0 mt-auto">
         <a 
           href={bestRetailer?.url} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="btn-primary w-full group-hover:scale-[1.03] active:scale-95 transition-all"
+          className="btn-primary w-full group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all flex items-center justify-center gap-2"
         >
           Grab This Deal
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 group-hover:translate-x-1 transition-transform">
             <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
           </svg>
         </a>

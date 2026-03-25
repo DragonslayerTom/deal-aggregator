@@ -92,12 +92,16 @@ class AmazonScraper(RetailerScraper):
                     link = item.find('h2').find('a')
                     if not link:
                         continue
+                        
+                    image = item.find('img', class_='s-image')
+                    image_url = image['src'] if image else ""
                     
                     products.append({
                         'retailer': self.name,
                         'name': title.text.strip(),
                         'price': float(price.text.replace('$', '').replace(',', '')),
-                        'url': f"{self.base_url}{link['href']}"
+                        'url': f"{self.base_url}{link['href']}",
+                        'image': image_url
                     })
                 except Exception as e:
                     logger.debug(f"Error parsing Amazon product: {e}")
@@ -149,11 +153,15 @@ class EbayScraper(RetailerScraper):
                     # Parse eBay price format
                     price_text = price.text.strip().split()[0].replace('$', '')
                     
+                    image = item.find('img')
+                    image_url = image['src'] if image else ""
+                    
                     products.append({
                         'retailer': self.name,
                         'name': title.text.strip(),
                         'price': float(price_text),
-                        'url': link['href']
+                        'url': link['href'],
+                        'image': image_url
                     })
                 except Exception as e:
                     logger.debug(f"Error parsing eBay product: {e}")
@@ -208,6 +216,9 @@ class AmazonPlaywrightScraper(RetailerScraper):
                         link_elem = await item.locator('h2 a').first.get_attribute('href')
                         if not link_elem:
                             continue
+                            
+                        # Extract Image
+                        image_elem = await item.locator('img.s-image').first.get_attribute('src')
                         
                         price_str = price_elem.replace('$', '').replace(',', '').strip()
                         
@@ -215,7 +226,8 @@ class AmazonPlaywrightScraper(RetailerScraper):
                             'retailer': 'Amazon',
                             'name': title_elem.strip(),
                             'price': float(price_str),
-                            'url': f"{self.base_url}{link_elem}"
+                            'url': f"{self.base_url}{link_elem}",
+                            'image': image_elem or ""
                         })
                     except Exception as e:
                         logger.debug(f"Error parsing Amazon product (PW): {e}")
@@ -264,12 +276,16 @@ class BestBuyScraper(RetailerScraper):
                     link = item.find('a')
                     if not link:
                         continue
+                        
+                    image = item.find('img', class_='product-image')
+                    image_url = image['src'] if image else ""
                     
                     products.append({
                         'retailer': self.name,
                         'name': title.text.strip(),
                         'price': float(price.text.strip().split('$')[1]),
-                        'url': f"{self.base_url}{link['href']}"
+                        'url': f"{self.base_url}{link['href']}",
+                        'image': image_url
                     })
                 except Exception as e:
                     logger.debug(f"Error parsing Best Buy product: {e}")
@@ -292,7 +308,8 @@ class MockScraper(RetailerScraper):
                 'retailer': self.name,
                 'name': f'{query} - Item {i}',
                 'price': round(random.uniform(50, 500), 2),
-                'url': f'https://example.com/product/{i}'
+                'url': f'https://example.com/product/{i}',
+                'image': f'https://picsum.photos/seed/{query}{i}/300/300'
             }
             for i in range(1, limit + 1)
         ]
@@ -345,6 +362,7 @@ class ExaScraper(RetailerScraper):
                         'name': res.title[:60],
                         'price': price,
                         'url': res.url,
+                        'image': getattr(res, 'image', "") or "",
                         'highlights': res.highlights[0] if res.highlights else ""
                     })
                 except:

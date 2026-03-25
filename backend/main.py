@@ -55,7 +55,12 @@ async def search_endpoint(q: str, limit: int = 20):
         for item in products_data:
             key = item['name'][:50]
             if key not in results:
-                results[key] = {'name': item['name'], 'retailers': []}
+                results[key] = {'name': item['name'], 'image': item.get('image', ''), 'retailers': []}
+            
+            # Use the first available image if one wasn't set yet
+            if not results[key].get('image') and item.get('image'):
+                results[key]['image'] = item.get('image')
+                
             results[key]['retailers'].append({
                 'retailer': item['retailer'],
                 'price': item['price'],
